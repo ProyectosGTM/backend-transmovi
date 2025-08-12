@@ -6,9 +6,10 @@ const {
   getVehiculoById,
   createVehiculo,
   updateVehiculo,
-  deleteVehiculo
+  deleteVehiculo,
+  changeVehiculoEstatus
 } = require('../controllers/vehiculosController');
-const { validateVehiculoCreation, validateVehiculoUpdate } = require('../validators/vehiculosValidators');
+const { validateVehiculoCreation, validateVehiculoUpdate, validateEstatusChange } = require('../validators/vehiculosValidators');
 const { verifyToken, checkRole } = require('../middlewares/authMiddleware');
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.get('/vehiculos/:id', verifyToken, checkRole(['admin', 'superadmin']), ge
 router.post('/vehiculos', verifyToken, checkRole(['admin']), validateVehiculoCreation, createVehiculo);
 router.put('/vehiculos/:id', verifyToken, checkRole(['admin']), validateVehiculoUpdate, updateVehiculo);
 router.delete('/vehiculos/:id', verifyToken, checkRole(['admin']), deleteVehiculo);
+//apartado agregado
+router.patch('/vehiculos/:id/estatus',verifyToken,checkRole(['admin','superadmin']),validateEstatusChange,changeVehiculoEstatus );
 
 module.exports = router;

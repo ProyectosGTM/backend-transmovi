@@ -91,6 +91,38 @@ const updateVehiculo = async (req, res, next) => {
     next(error);
   }
 };
+//apartado agregado
+//cambiar el Estatus
+const changeVehiculoEstatus = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      await t.rollback();
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { id } = req.params;
+    const { Estatus } = req.body;  // esperamos 0 aquí
+
+    const vehiculo = await Vehiculos.findByPk(id);
+    if (!vehiculo) {
+      await t.rollback();
+      return res.status(404).json({ message: 'Vehículo no encontrado' });
+    }
+
+    await vehiculo.update({ Estatus }, { transaction: t }); //agregamos los datos a la base de datos
+    await t.commit();
+
+                              //generamos una bitacora
+    await logToBitacora('Vehiculos',`Se cambió el estatus a ${Estatus} del vehículo con ID: ${id}`,'UPDATE',`UPDATE Vehiculos SET Estatus=${Estatus} WHERE Id=${id}`,req.user.id);
+
+    res.status(200).json({ message: `Estatus actualizado a ${Estatus} exitosamente`, vehiculo });
+  } catch (error) {
+    if (!t.finished) await t.rollback();
+    next(error);
+  }
+};
 
 // Eliminar un vehículo
 const deleteVehiculo = async (req, res, next) => {
@@ -119,5 +151,6 @@ module.exports = {
   getVehiculoById,
   createVehiculo,
   updateVehiculo,
+  changeVehiculoEstatus,
   deleteVehiculo
 };
