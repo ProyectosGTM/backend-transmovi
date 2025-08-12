@@ -11,6 +11,8 @@ const loginAttempts = {};
 const login = async (req, res, next) => {
   try {
     const { UserName, Password } = req.body;
+    console.log(UserName);
+    
 
     // Verificar que los campos de UserName y Password estén presentes
     if (!UserName || !Password) {
