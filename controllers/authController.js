@@ -14,6 +14,7 @@ const login = async (req, res, next) => {
 
     // Verificar que los campos de UserName y Password estén presentes
     if (!UserName || !Password) {
+      console.log(Username)
       return res.status(400).json({ message: 'Por favor, ingrese ambos campos: nombre de usuario y contraseña.' });
     }
 
