@@ -12,6 +12,9 @@ const login = async (req, res, next) => {
   try {
     const { UserName, Password } = req.body;
     console.log(UserName);
+    console.log('prueba de git');
+    console.log('test repositorio');
+    
     
 
     // Verificar que los campos de UserName y Password estén presentes
